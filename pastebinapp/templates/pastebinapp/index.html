@@ -1,0 +1,10 @@
+<a href="{% url 'pastebinapp:enter_snip' %}">Add new snippet</a>
+<br>
+{% if latest_snips %}
+  {% for snip in latest_snips %}
+    <a href="{% url 'pastebinapp:code' snip.pk %}">{{ snip.title }}</a>
+    <br>
+  {% endfor %}
+{% else %}
+  <p>No snippets available</p>
+{% endif %}
