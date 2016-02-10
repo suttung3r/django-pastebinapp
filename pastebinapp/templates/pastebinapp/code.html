@@ -5,58 +5,21 @@
 <body>
   <link href="{% static 'pastebinapp/CodeMirror/lib/codemirror.css' %}" type="text/css" rel="stylesheet" />
   <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/lib/codemirror.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/addon/mode/simple.js' %}"></script>
   <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/mode/clike/clike.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/mode/rust/rust.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/mode/python/python.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/scripts/pastebin2CodeMirror.js' %}"></script>
   <h3>{{ title }}</h3>
   <div id="codedisplay"></div>
   <a href="{% url 'pastebinapp:edit_snip' snip_id %}">Edit</a>
   <a href="{% url 'pastebinapp:compile_snip' snip_id %}">Compile</a>
 </body>
 <script>
-        // HTML Escape helper utility
-    var util = (function () {
-      // Thanks to Andrea Giammarchi
-      var
-        reEscape = /[&<>'"]/g,
-        reUnescape = /&(?:amp|#38|lt|#60|gt|#62|apos|#39|quot|#34);/g,
-        oEscape = {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          "'": '&#39;',
-          '"': '&quot;'
-        },
-        oUnescape = {
-          '&amp;': '&',
-          '&#38;': '&',
-          '&lt;': '<',
-          '&#60;': '<',
-          '&gt;': '>',
-          '&#62;': '>',
-          '&apos;': "'",
-          '&#39;': "'",
-          '&quot;': '"',
-          '&#34;': '"'
-        },
-        fnEscape = function (m) {
-          return oEscape[m];
-        },
-        fnUnescape = function (m) {
-          return oUnescape[m];
-        },
-        replace = String.prototype.replace
-      ;
-      return (Object.freeze || Object)({
-        escape: function escape(s) {
-          return replace.call(s, reEscape, fnEscape);
-        },
-        unescape: function unescape(s) {
-          return replace.call(s, reUnescape, fnUnescape);
-        }
-      });
-    }());
-    
-    // Tagged template function
-    function html(input) {
+    var lang = "{{ lang|safe }}";
+    var mode = langtype2mode(lang);
+    console.log(mode);
+    function escapenewline(input) {
         var prev = 0;
         var end = 0;
         var newstr = "";
@@ -76,6 +39,6 @@
         newstr += remainder;
         return newstr;
     }
-    var code = html`{{ code|safe }}`;
-    var myCodeMirror = CodeMirror(document.getElementById("codedisplay"), {value: code, mode: "text/x-csrc"});
+    var code = escapenewline`{{ code|safe }}`;
+    var myCodeMirror = CodeMirror(document.getElementById("codedisplay"), {value: code, mode: mode});
 </script>

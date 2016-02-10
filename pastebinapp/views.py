@@ -1,15 +1,16 @@
 from django.shortcuts import get_object_or_404, render
+from django.db.utils import ProgrammingError
 
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from .models import Snippet, SnippetForm
-from compile_lang import C_Compiler, CPP_Compiler, CompilerException
+from compile_lang import C_Compiler, CPP_Compiler, CompilerException, Rust_Compiler
 
 import html
 import os
 import tempfile
 
-def index(request):
+def index(request): 
     latest = Snippet.objects.order_by('pk').reverse()[0:5]
     context = {
       'latest_snips': latest
@@ -23,7 +24,7 @@ def code(request, snip_id):
         raise Http404("Snippet does not exist")
     return render(request, 'pastebinapp/code.html', 
                   {'code': snip.text, 'title': snip.title,
-                   'snip_id': snip_id})
+                   'snip_id': snip_id, 'lang': snip.lang})
 
 def enter_snip(request):
     if request.method == 'POST':
@@ -71,4 +72,6 @@ def get_compiler(snip, tempdir):
         comp = C_Compiler(code=snip.text, tempdir=tempdir)
     elif snip.lang == Snippet.LangType.CPP:
         comp = CPP_Compiler(code=snip.text, tempdir=tempdir)
+    elif snip.lang == Snippet.LangType.RUST:
+        comp = Rust_Compiler(code=snip.text, tempdir=tempdir)
     return comp
