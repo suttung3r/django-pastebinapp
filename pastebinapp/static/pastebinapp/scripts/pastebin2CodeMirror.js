@@ -2,9 +2,9 @@ function langtype2mode(langtype) {
   console.log(langtype);
   switch (langtype) {
     case "PYTHON":
-      return "text/python";
+      return "text/x-python";
     case "RUST":
-      return "text/rust";
+      return "text/x-rustsrc";
     case "C":
     case "CPP":
     default:
