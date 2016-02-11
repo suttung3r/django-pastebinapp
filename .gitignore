@@ -1,0 +1,7 @@
+*.swp
+*.pyc
+build/
+dist/
+*/__pycache__
+*/migrations
+django_pastebinapp.egg-info
