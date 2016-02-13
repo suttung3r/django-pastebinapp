@@ -1,5 +1,4 @@
 function langtype2mode(langtype) {
-  console.log(langtype);
   switch (langtype) {
     case "PYTHON":
       return "text/x-python";

@@ -5,13 +5,25 @@
 <body>
   <link href="{% static 'pastebinapp/CodeMirror/lib/codemirror.css' %}" type="text/css" rel="stylesheet" />
   <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/lib/codemirror.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/addon/mode/simple.js' %}"></script>
   <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/mode/clike/clike.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/mode/rust/rust.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/CodeMirror/mode/python/python.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/scripts/pastebin2CodeMirror.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/scripts/pastebin2CodeMirror.js' %}"></script>
+  <script type="text/javascript" src="{% static 'pastebinapp/scripts/jquery.js' %}"></script>
 <form method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" />
 </form>
 <script>
-  var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("id_text"), {mode: "text/x-csrc"});
+  var mode = langtype2mode($("#id_lang option:selected").text());
+  var myCodeMirror = CodeMirror.fromTextArea(document.getElementById("id_text"), {mode: mode});
+  $("#id_lang").click(function() {
+    mode = langtype2mode($("#id_lang option:selected").text());
+    myCodeMirror.setOption("mode", mode);
+    myCodeMirror.refresh();
+  });
 </script>
 </body>
