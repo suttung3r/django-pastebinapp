@@ -44,19 +44,13 @@ def compile_snip(request, snip_id):
         snip = Snippet.objects.get(pk=snip_id)
     except Snippet.DoesNotExist:
         raise Http404("Snippet does not exist")
-    try:
-        tempdir = tempfile.mkdtemp()
-        print('forwarding')
-        result = fwd_req(Snippet.app_to_pb_comp_lang_map[snip.lang],
-                         snip.text)
-        if result is None:
-          print('compiler unavailable')
-          return render(request, 'pastebinapp/failure.html')
-        print(result)
-    except CompilerException as e:
-        return render(request, 'pastebinapp/failure.html', {'exception': e})
-    finally:
-        os.rmdir(tempdir)
+    print('forwarding')
+    result = fwd_req(Snippet.app_to_pb_comp_lang_map[snip.lang],
+                     snip.text)
+    if result is None:
+      print('compiler unavailable')
+      return render(request, 'pastebinapp/failure.html')
+    print(result)
     return render(request, 'pastebinapp/success.html')
 
 def edit_snip(request, snip_id):
