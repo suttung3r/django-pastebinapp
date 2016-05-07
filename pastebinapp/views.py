@@ -46,9 +46,6 @@ def compile_snip(request, snip_id):
         raise Http404("Snippet does not exist")
     try:
         tempdir = tempfile.mkdtemp()
-        comp = get_compiler(snip, tempdir)
-        if comp is None:
-            raise Http404("No compiler available")
         print('forwarding')
         result = fwd_req(Snippet.app_to_pb_comp_lang_map[snip.lang],
                          snip.text)
@@ -56,7 +53,6 @@ def compile_snip(request, snip_id):
           print('compiler unavailable')
           return render(request, 'pastebinapp/failure.html')
         print(result)
-        comp.compile_code()
     except CompilerException as e:
         return render(request, 'pastebinapp/failure.html', {'exception': e})
     finally:
@@ -74,13 +70,3 @@ def edit_snip(request, snip_id):
         form = SnippetForm(instance=snip)
 
     return render(request, 'pastebinapp/enter_snip.html', {'form': form})
-
-def get_compiler(snip, tempdir):
-    comp = None
-    if snip.lang == Snippet.LangType.C:
-        comp = C_Compiler(code=snip.text, tempdir=tempdir)
-    elif snip.lang == Snippet.LangType.CPP:
-        comp = CPP_Compiler(code=snip.text, tempdir=tempdir)
-    elif snip.lang == Snippet.LangType.RUST:
-        comp = Rust_Compiler(code=snip.text, tempdir=tempdir)
-    return comp
