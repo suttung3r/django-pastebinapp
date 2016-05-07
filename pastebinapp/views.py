@@ -49,7 +49,7 @@ def compile_snip(request, snip_id):
                      snip.text)
     if result is None:
       print('compiler unavailable')
-      return render(request, 'pastebinapp/failure.html')
+      return render(request, 'pastebinapp/failure.html', {'message': 'compiler unavailable'})
     print(result)
     return render(request, 'pastebinapp/success.html')
 
