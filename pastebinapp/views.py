@@ -5,10 +5,12 @@ from django.http import HttpResponse, HttpResponseRedirect, Http404
 
 from .models import Snippet, SnippetForm
 from compile_lang import C_Compiler, CPP_Compiler, CompilerException, Rust_Compiler
+from .tasks import test, fwd_req
 
 import html
 import os
 import tempfile
+import time
 
 def index(request): 
     latest = Snippet.objects.order_by('pk').reverse()[0:5]
@@ -47,6 +49,13 @@ def compile_snip(request, snip_id):
         comp = get_compiler(snip, tempdir)
         if comp is None:
             raise Http404("No compiler available")
+        print('forwarding')
+        result = fwd_req(Snippet.app_to_pb_comp_lang_map[snip.lang],
+                         snip.text)
+        if result is None:
+          print('compiler unavailable')
+          return render(request, 'pastebinapp/failure.html')
+        print(result)
         comp.compile_code()
     except CompilerException as e:
         return render(request, 'pastebinapp/failure.html', {'exception': e})

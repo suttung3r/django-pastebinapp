@@ -8,6 +8,7 @@ from pastebinapp.widgets import CodeInputWidget
 
 from compile_lang import SUPPORTED_LANGUAGES
 
+
 # Create your models here.
 
 class Snippet(models.Model):
@@ -16,6 +17,12 @@ class Snippet(models.Model):
         CPP = ChoiceItem('C++')
         PYTHON = ChoiceItem('PYTHON')
         RUST = ChoiceItem('RUST')
+    app_to_pb_comp_lang_map = {
+      LangType.C: SUPPORTED_LANGUAGES.C,
+      LangType.CPP: SUPPORTED_LANGUAGES.CPP,
+      LangType.RUST: SUPPORTED_LANGUAGES.RUST,
+      LangType.PYTHON: SUPPORTED_LANGUAGES.PYTHON,
+    }
     text = models.TextField(max_length=20000)
     lang = models.CharField(max_length=50,
                             choices=LangType.choices,
